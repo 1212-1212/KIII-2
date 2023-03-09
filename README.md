@@ -1321,16 +1321,7 @@ ubuntu                   18.04        b89fba62bc15   7 days ago      63.1MB
 wurstmeister/kafka       2.11-2.0.0   568143d73a6b   4 years ago     339MB
 wurstmeister/zookeeper   3.4.6        6fe5551964f5   7 years ago     451MB
 ```
-### docker build -t="test/static_web:v1" .
-```
-$ docker build -t="test/static_web:v1" .
-[+] Building 0.1s (2/2) FINISHED
- => [internal] load build definition from Dockerfile                                                            0.1s
- => => transferring dockerfile: 2B                                                                              0.1s
- => [internal] load .dockerignore                                                                               0.1s
- => => transferring context: 2B
 
-```
 ### docker history static_web
 
 ```
@@ -1366,4 +1357,70 @@ $ docker port static_web 80
 ```
 $ curl localhost:62488
 Hi, I am in your container
+```
+### docker build --no-cache -t"gigo123/static_web" .
+```
+$ docker build --no-cache -t"gigo123/static_web" .
+
+[+] Building 107.0s (7/7) FINISHED                                                                                    
+=> [internal] load build definition from Dockerfile                                                            
+0.0s  => => transferring dockerfile: 38B                                                                             
+0.0s  => [internal] load .dockerignore                                                                               
+0.0s  => => transferring context: 2B                                                                                 
+0.0s  => [internal] load metadata for docker.io/library/ubuntu:18.04                                                 
+0.0s  => CACHED [1/3] FROM docker.io/library/ubuntu:18.04                                                            
+0.0s  => [2/3] RUN apt-get update; apt-get install -y nginx                                                        
+105.8s  => [3/3] RUN echo 'Hi, I am in your container' >/var/www/html/index.html                                       
+0.5s  => exporting to image                                                                                          
+0.5s  => => exporting layers                                                                                         
+0.5s  => => writing image sha256:2cd023d819465e336ccc67cf2f0e1874dd220a06aed2041c4a19d9fead67f850                    
+0.0s  => => naming to docker.io/gigo123/static_web                                                                   
+0.0s                                    
+```
+### docker push gigo123/static_web
+```
+$ docker push gigo123/static_web
+Using default tag: latest
+The push refers to repository [docker.io/gigo123/static_web]
+23baabfc238d: Pushed
+a4ee09aefbe5: Pushed
+52c5ca3e9f3b: Pushed
+```
+### docker images
+```
+REPOSITORY               TAG          IMAGE ID       CREATED         SIZE
+gigo123/static_web       latest       2cd023d81946   7 minutes ago   168MB
+<none>                   <none>       b75e274d9a68   20 hours ago    168MB
+ubuntu                   latest       74f2314a03de   8 days ago      77.8MB
+ubuntu                   18.04        b89fba62bc15   8 days ago      63.1MB
+wurstmeister/kafka       2.11-2.0.0   568143d73a6b   4 years ago     339MB
+wurstmeister/zookeeper   3.4.6        6fe5551964f5   7 years ago     451MB
+```
+
+### docker rmi b75e274d9a68
+```
+$ docker rmi b75e274d9a68
+Error response from daemon: conflict: unable to delete b75e274d9a68 (must be forced) - image is being used by stopped container 8ecbabf9ec8a
+```
+### docker rm 8ecbabf9ec8a
+```
+$ docker rm 8ecbabf9ec8a
+8ecbabf9ec8a
+```
+### docker ps -a
+```
+$ docker ps -a
+CONTAINER ID   IMAGE                           COMMAND                  CREATED        STATUS                    PORTS                                  NAMES
+c032dea298f8   ubuntu:18.04                    "/bin/bash"              21 hours ago   Exited (0) 21 hours ago                                          new_container
+8d3c1aee8a10   ubuntu                          "/bin/bash"              22 hours ago   Exited (0) 22 hours ago                                          bob_the_container
+b5e6f9280dd5   ubuntu                          "/bin/bash"              22 hours ago   Exited (0) 22 hours ago                                          clever_kepler
+016f2c53b0be   wurstmeister/kafka:2.11-2.0.0   "start-kafka.sh"         5 weeks ago    Exited (255) 2 days ago   0.0.0.0:9092->9092/tcp, 9093/tcp       e-kafka-1
+54d2e38c991d   wurstmeister/zookeeper:3.4.6    "/bin/sh -c '/usr/sb…"   5 weeks ago    Exited (255) 2 days ago   22/tcp, 2181/tcp, 2888/tcp, 3888/tcp   e-zookeeper-1
+c97b8b3af058   wurstmeister/kafka:2.11-2.0.0   "start-kafka.sh"         5 weeks ago    Exited (1) 5 weeks ago                                           bold_banach
+```
+
+### docker rmi b75e274d9a68
+```
+$ docker rmi b75e274d9a68
+Deleted: sha256:b75e274d9a6823adc52e9603332b6847480ca45690cef7c416a2ae813d5756a7
 ```
