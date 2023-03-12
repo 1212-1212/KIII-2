@@ -1607,25 +1607,6 @@ drwxr-xr-x   1 root root 4096 Mar  1 02:03 usr
 drwxr-xr-x   1 root root 4096 Mar  9 13:59 var
 
 ```
-### docker build --no-cache -t"gigo123/static_web" .
-```
-$ docker build --no-cache -t"gigo123/static_web" .
-
-[+] Building 107.0s (7/7) FINISHED                                                                                    
-=> [internal] load build definition from Dockerfile                                                            
-0.0s  => => transferring dockerfile: 38B                                                                             
-0.0s  => [internal] load .dockerignore                                                                               
-0.0s  => => transferring context: 2B                                                                                 
-0.0s  => [internal] load metadata for docker.io/library/ubuntu:18.04                                                 
-0.0s  => CACHED [1/3] FROM docker.io/library/ubuntu:18.04                                                            
-0.0s  => [2/3] RUN apt-get update; apt-get install -y nginx                                                        
-105.8s  => [3/3] RUN echo 'Hi, I am in your container' >/var/www/html/index.html                                       
-0.5s  => exporting to image                                                                                          
-0.5s  => => exporting layers                                                                                         
-0.5s  => => writing image sha256:2cd023d819465e336ccc67cf2f0e1874dd220a06aed2041c4a19d9fead67f850                    
-0.0s  => => naming to docker.io/gigo123/static_web                                                                   
-0.0s                                    
-```
 ### ARG
 ```
 $ cat Dockerfile
@@ -1658,6 +1639,28 @@ $ docker run -i -t gigo123/static_web
 root@0e6d2d7714f5:/bin# exit
 exit
 ```
+
+
+### docker build --no-cache -t"gigo123/static_web" .
+```
+$ docker build --no-cache -t"gigo123/static_web" .
+
+[+] Building 107.0s (7/7) FINISHED                                                                                    
+=> [internal] load build definition from Dockerfile                                                            
+0.0s  => => transferring dockerfile: 38B                                                                             
+0.0s  => [internal] load .dockerignore                                                                               
+0.0s  => => transferring context: 2B                                                                                 
+0.0s  => [internal] load metadata for docker.io/library/ubuntu:18.04                                                 
+0.0s  => CACHED [1/3] FROM docker.io/library/ubuntu:18.04                                                            
+0.0s  => [2/3] RUN apt-get update; apt-get install -y nginx                                                        
+105.8s  => [3/3] RUN echo 'Hi, I am in your container' >/var/www/html/index.html                                       
+0.5s  => exporting to image                                                                                          
+0.5s  => => exporting layers                                                                                         
+0.5s  => => writing image sha256:2cd023d819465e336ccc67cf2f0e1874dd220a06aed2041c4a19d9fead67f850                    
+0.0s  => => naming to docker.io/gigo123/static_web                                                                   
+0.0s                                    
+```
+
 ### docker push gigo123/static_web
 ```
 $ docker push gigo123/static_web
