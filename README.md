@@ -1358,6 +1358,255 @@ $ docker port static_web 80
 $ curl localhost:62488
 Hi, I am in your container
 ```
+
+## Dockerfile instructions
+
+### CMD
+```
+$ cat Dockerfile
+# Version: 0.0.1
+FROM ubuntu:18.04
+RUN apt-get update; apt-get install -y nginx
+RUN echo 'Hi, I am in your container' \
+>/var/www/html/index.html
+EXPOSE 80
+CMD ["/bin/bash", "-l"]
+
+```
+```
+$ docker build -t="gigo123/static_web" .                                            
+[+] Building 0.5s (7/7) FINISHED                                                                                      
+=> [internal] load .dockerignore                                                                              
+0.1s  => => transferring context: 2B                                                                                 
+0.1s  => [internal] load build definition from Dockerfile                                                            
+0.2s  => => transferring dockerfile: 225B                                                                            
+0.1s  => [internal] load metadata for docker.io/library/ubuntu:18.04                                                 
+0.0s  => [1/3] FROM docker.io/library/ubuntu:18.04                                                                   
+0.0s  => CACHED [2/3] RUN apt-get update; apt-get install -y nginx                                                   
+0.0s  => CACHED [3/3] RUN echo 'Hi, I am in your container' >/var/www/html/index.html                                
+0.0s  => exporting to image                                                                                          
+0.2s  => => exporting layers                                                                                         
+0.0s  => => writing image sha256:28c139591f31f021b4656881e7d66ede76eedba2036218f8437bc9436427ff91                    
+0.1s  => => naming to docker.io/gigo123/static_web                                                                   
+0.0s                                                                                                                      
+Use 'docker scan' to run Snyk tests against images to find vulnerabilities and learn how to fix them                    
+$ docker run -i -t gigo123/static_web
+root@1b092e80ebdd:/# pwd
+/
+root@1b092e80ebdd:/# exit
+logout
+
+$ docker ps -a
+CONTAINER ID   IMAGE                           COMMAND                  CREATED          STATUS                     PORTS                                  NAMES
+1b092e80ebdd   gigo123/static_web              "/bin/bash -l"           15 seconds ago   Exited (0) 5 seconds ago                                          infallible_moore
+c032dea298f8   ubuntu:18.04                    "/bin/bash"              4 days ago       Exited (0) 4 days ago                                             new_container
+8d3c1aee8a10   ubuntu                          "/bin/bash"              4 days ago       Exited (0) 4 days ago                                             bob_the_container
+b5e6f9280dd5   ubuntu                          "/bin/bash"              4 days ago       Exited (0) 4 days ago                                             clever_kepler
+016f2c53b0be   wurstmeister/kafka:2.11-2.0.0   "start-kafka.sh"         6 weeks ago      Exited (255) 6 days ago    0.0.0.0:9092->9092/tcp, 9093/tcp       e-kafka-1
+54d2e38c991d   wurstmeister/zookeeper:3.4.6    "/bin/sh -c '/usr/sb…"   6 weeks ago      Exited (255) 6 days ago    22/tcp, 2181/tcp, 2888/tcp, 3888/tcp   e-zookeeper-1
+c97b8b3af058   wurstmeister/kafka:2.11-2.0.0   "start-kafka.sh"         6 weeks ago      Exited (1) 5 weeks ago                                            bold_banach
+```
+### ENTRYPOINT
+```
+$ cat Dockerfile
+# Version: 0.0.1
+FROM ubuntu:18.04
+RUN apt-get update; apt-get install -y nginx
+RUN echo 'Hi, I am in your container' \
+>/var/www/html/index.html
+EXPOSE 80
+ENTRYPOINT ["/usr/sbin/nginx"]
+
+$ docker build -t="gigo123/static_web" .
+[+] Building 0.2s (7/7) FINISHED
+ => [internal] load build definition from Dockerfile                                                            0.0s
+ => => transferring dockerfile: 254B                                                                            0.0s
+ => [internal] load .dockerignore                                                                               0.0s
+ => => transferring context: 2B                                                                                 0.0s
+ => [internal] load metadata for docker.io/library/ubuntu:18.04                                                 0.0s
+ => [1/3] FROM docker.io/library/ubuntu:18.04                                                                   0.0s
+ => CACHED [2/3] RUN apt-get update; apt-get install -y nginx                                                   0.0s
+ => CACHED [3/3] RUN echo 'Hi, I am in your container' >/var/www/html/index.html                                0.0s
+ => exporting to image                                                                                          0.0s
+ => => exporting layers                                                                                         0.0s
+ => => writing image sha256:eb59899781a72c6faab6cae70a34a8c1d64e88dbe8002536ebfd432c04b84f68                    0.0s
+ => => naming to docker.io/gigo123/static_web                                                                   0.0s
+ $ docker run -i -t gigo123/static_web
+ $ docker ps
+CONTAINER ID   IMAGE                COMMAND                  CREATED         STATUS         PORTS     NAMES
+bfbc0645365d   gigo123/static_web   "/usr/sbin/nginx -g …"   2 minutes ago   Up 2 minutes   80/tcp    happy_curran
+```
+### WORKDIR
+```
+$ cat Dockerfile
+# Version: 0.0.1
+FROM ubuntu:18.04
+RUN apt-get update; apt-get install -y nginx
+RUN echo 'Hi, I am in your container' \
+>/var/www/html/index.html
+EXPOSE 80
+WORKDIR /bin/
+
+$ docker build -t="gigo123/static_web" .
+[+] Building 1.1s (9/9) FINISHED
+ => [internal] load build definition from Dockerfile                                                            0.0s
+ => => transferring dockerfile: 227B                                                                            0.0s
+ => [internal] load .dockerignore                                                                               0.0s
+ => => transferring context: 2B                                                                                 0.0s
+ => [internal] load metadata for docker.io/library/ubuntu:18.04                                                 0.0s
+ => [1/5] FROM docker.io/library/ubuntu:18.04                                                                   0.0s
+ => CACHED [2/5] RUN apt-get update; apt-get install -y nginx                                                   0.0s
+ => CACHED [3/5] RUN echo 'Hi, I am in your container' >/var/www/html/index.html                                0.0s
+ => [4/5] WORKDIR /bin/                                                                                         0.1s
+ => [5/5] RUN ls -l                                                                                             0.6s
+ => exporting to image                                                                                          0.3s
+ => => exporting layers                                                                                         0.2s
+ => => writing image sha256:fda7623e574bcdbf4fd4164588680a15c6b409c8cbcf05ec30b787555ec88a40                    0.0s
+ => => naming to docker.io/gigo123/static_web                                                                   0.0s
+o
+Use 'docker scan' to run Snyk tests against images to find vulnerabilities and learn how to fix them
+
+$ docker run -i -t gigo123/static_web
+root@bc5655ba4dce:/bin#
+
+```
+### ENV
+```
+$ cat Dockerfile
+# Version: 0.0.1
+ENV WORKING_DIRECTORY = /bin/
+FROM ubuntu:18.04
+RUN apt-get update; apt-get install -y nginx
+RUN echo 'Hi, I am in your container' \
+>/var/www/html/index.html
+EXPOSE 80
+WORKDIR WORKING_DIRECTORY
+
+$ docker build -t="gigo123/static_web" .
+[+] Building 0.1s (2/2) FINISHED
+ => [internal] load build definition from Dockerfile                                                            0.0s
+ => => transferring dockerfile: 259B                                                                            0.0s
+ => [internal] load .dockerignore                                                                               0.0s
+ => => transferring context: 2B                                                                                 0.0s
+failed to solve with frontend dockerfile.v0: failed to create LLB definition: no build stage in current context
+
+$ docker run -i -t gigo123/static_web
+root@46f0569f47f7:/bin#
+
+```
+### ADD
+```
+$ cat Dockerfile
+# Version: 0.0.1
+FROM ubuntu:18.04
+RUN apt-get update; apt-get install -y nginx
+RUN echo 'Hi, I am in your container' \
+>/var/www/html/index.html
+EXPOSE 80
+ADD sample_text.txt /sample_text.txt
+
+$ docker build -t="gigo123/static_web" .
+[+] Building 0.4s (9/9) FINISHED
+ => [internal] load build definition from Dockerfile                                                            0.0s
+ => => transferring dockerfile: 240B                                                                            0.0s
+ => [internal] load .dockerignore                                                                               0.0s
+ => => transferring context: 2B                                                                                 0.0s
+ => [internal] load metadata for docker.io/library/ubuntu:18.04                                                 0.0s
+ => [1/4] FROM docker.io/library/ubuntu:18.04                                                                   0.0s
+ => [internal] load build context                                                                               0.0s
+ => => transferring context: 55B                                                                                0.0s
+ => CACHED [2/4] RUN apt-get update; apt-get install -y nginx                                                   0.0s
+ => CACHED [3/4] RUN echo 'Hi, I am in your container' >/var/www/html/index.html                                0.0s
+ => [4/4] ADD sample_text.txt /sample_text.txt                                                                  0.1s
+ => exporting to image                                                                                          0.1s
+ => => exporting layers                                                                                         0.0s
+ => => writing image sha256:172a51a2cb99d8c91957d59d8eabd776ceff20154109f4df5bace03e8055cd74                    0.0s
+ => => naming to docker.io/gigo123/static_web                                                                   0.0s
+
+Use 'docker scan' to run Snyk tests against images to find vulnerabilities and learn how to fix them
+
+b$ docker run -i -t gigo123/static_web
+root@e090e24a2d4c:/# ls -l
+total 80
+drwxr-xr-x   1 root root 4096 Mar  9 13:59 bin
+drwxr-xr-x   2 root root 4096 Apr 24  2018 boot
+drwxr-xr-x   5 root root  360 Mar 12 21:36 dev
+drwxr-xr-x   1 root root 4096 Mar 12 21:36 etc
+drwxr-xr-x   2 root root 4096 Apr 24  2018 home
+drwxr-xr-x   1 root root 4096 May 23  2017 lib
+drwxr-xr-x   2 root root 4096 Mar  1 02:04 lib64
+drwxr-xr-x   2 root root 4096 Mar  1 02:03 media
+drwxr-xr-x   2 root root 4096 Mar  1 02:03 mnt
+drwxr-xr-x   2 root root 4096 Mar  1 02:03 opt
+dr-xr-xr-x 283 root root    0 Mar 12 21:36 proc
+drwx------   2 root root 4096 Mar  1 02:04 root
+drwxr-xr-x   5 root root 4096 Mar  1 02:04 run
+-rw-r--r--   1 root root   13 Mar 12 21:29 sample_text.txt
+drwxr-xr-x   1 root root 4096 Mar  9 13:59 sbin
+drwxr-xr-x   2 root root 4096 Mar  1 02:03 srv
+dr-xr-xr-x  11 root root    0 Mar 12 21:36 sys
+drwxrwxrwt   1 root root 4096 Mar  9 13:59 tmp
+drwxr-xr-x   1 root root 4096 Mar  1 02:03 usr
+drwxr-xr-x   1 root root 4096 Mar  9 13:59 var
+root@e090e24a2d4c:/# exit
+exit
+
+```
+### COPY
+```
+$ cat Dockerfile
+# Version: 0.0.1
+FROM ubuntu:18.04
+RUN apt-get update; apt-get install -y nginx
+RUN echo 'Hi, I am in your container' \
+>/var/www/html/index.html
+EXPOSE 80
+COPY copy_text.txt /copy_text.txt
+$ docker build -t="gigo123/static_web" .
+[+] Building 0.6s (9/9) FINISHED
+ => [internal] load build definition from Dockerfile                                                            0.0s
+ => => transferring dockerfile: 237B                                                                            0.0s
+ => [internal] load .dockerignore                                                                               0.0s
+ => => transferring context: 2B                                                                                 0.0s
+ => [internal] load metadata for docker.io/library/ubuntu:18.04                                                 0.0s
+ => [1/4] FROM docker.io/library/ubuntu:18.04                                                                   0.0s
+ => [internal] load build context                                                                               0.0s
+ => => transferring context: 50B                                                                                0.0s
+ => CACHED [2/4] RUN apt-get update; apt-get install -y nginx                                                   0.0s
+ => CACHED [3/4] RUN echo 'Hi, I am in your container' >/var/www/html/index.html                                0.0s
+ => [4/4] COPY copy_text.txt /copy_text.txt                                                                     0.2s
+ => exporting to image                                                                                          0.1s
+ => => exporting layers                                                                                         0.1s
+ => => writing image sha256:40a9324a13128bc6564d9f110851cf0104b24b1a686b83311a2ebcc31c9b7b22                    0.0s
+ => => naming to docker.io/gigo123/static_web                                                                   0.0s
+
+Use 'docker scan' to run Snyk tests against images to find vulnerabilities and learn how to fix them
+
+$ docker run -i -t gigo123/static_web
+root@f1f8de9f5c97:/# ls -l
+total 80
+drwxr-xr-x   1 root root 4096 Mar  9 13:59 bin
+drwxr-xr-x   2 root root 4096 Apr 24  2018 boot
+-rw-r--r--   1 root root   10 Mar 12 21:57 copy_text.txt
+drwxr-xr-x   5 root root  360 Mar 12 21:58 dev
+drwxr-xr-x   1 root root 4096 Mar 12 21:58 etc
+drwxr-xr-x   2 root root 4096 Apr 24  2018 home
+drwxr-xr-x   1 root root 4096 May 23  2017 lib
+drwxr-xr-x   2 root root 4096 Mar  1 02:04 lib64
+drwxr-xr-x   2 root root 4096 Mar  1 02:03 media
+drwxr-xr-x   2 root root 4096 Mar  1 02:03 mnt
+drwxr-xr-x   2 root root 4096 Mar  1 02:03 opt
+dr-xr-xr-x 265 root root    0 Mar 12 21:58 proc
+drwx------   2 root root 4096 Mar  1 02:04 root
+drwxr-xr-x   5 root root 4096 Mar  1 02:04 run
+drwxr-xr-x   1 root root 4096 Mar  9 13:59 sbin
+drwxr-xr-x   2 root root 4096 Mar  1 02:03 srv
+dr-xr-xr-x  11 root root    0 Mar 12 21:58 sys
+drwxrwxrwt   1 root root 4096 Mar  9 13:59 tmp
+drwxr-xr-x   1 root root 4096 Mar  1 02:03 usr
+drwxr-xr-x   1 root root 4096 Mar  9 13:59 var
+
+```
 ### docker build --no-cache -t"gigo123/static_web" .
 ```
 $ docker build --no-cache -t"gigo123/static_web" .
@@ -1376,6 +1625,38 @@ $ docker build --no-cache -t"gigo123/static_web" .
 0.5s  => => writing image sha256:2cd023d819465e336ccc67cf2f0e1874dd220a06aed2041c4a19d9fead67f850                    
 0.0s  => => naming to docker.io/gigo123/static_web                                                                   
 0.0s                                    
+```
+### ARG
+```
+$ cat Dockerfile
+# Version: 0.0.1
+FROM ubuntu:18.04
+RUN apt-get update; apt-get install -y nginx
+RUN echo 'Hi, I am in your container' \
+>/var/www/html/index.html
+EXPOSE 80
+ARG WORK_DIR
+WORKDIR ${WORK_DIR}
+$ docker build --build-arg WORK_DIR=/bin/ -t="gigo123/static_web" .
+[+] Building 0.2s (8/8) FINISHED
+ => [internal] load build definition from Dockerfile                                                            0.0s
+ => => transferring dockerfile: 234B                                                                            0.0s
+ => [internal] load .dockerignore                                                                               0.0s
+ => => transferring context: 2B                                                                                 0.0s
+ => [internal] load metadata for docker.io/library/ubuntu:18.04                                                 0.0s
+ => [1/4] FROM docker.io/library/ubuntu:18.04                                                                   0.0s
+ => CACHED [2/4] RUN apt-get update; apt-get install -y nginx                                                   0.0s
+ => CACHED [3/4] RUN echo 'Hi, I am in your container' >/var/www/html/index.html                                0.0s
+ => CACHED [4/4] WORKDIR /bin/                                                                                  0.0s
+ => exporting to image                                                                                          0.0s
+ => => exporting layers                                                                                         0.0s
+ => => writing image sha256:d5e6d18fb95f9c185de484135a6dc00b9b31ca9aac13320cc382fd582d93b279                    0.0s
+ => => naming to docker.io/gigo123/static_web                                                                   0.0s
+
+Use 'docker scan' to run Snyk tests against images to find vulnerabilities and learn how to fix them
+$ docker run -i -t gigo123/static_web
+root@0e6d2d7714f5:/bin# exit
+exit
 ```
 ### docker push gigo123/static_web
 ```
